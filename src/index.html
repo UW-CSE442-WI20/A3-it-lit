@@ -4,6 +4,42 @@
     <meta charset="UTF-8">
     <script src="https://d3js.org/d3.v5.min.js"></script>
     <title>A3 It Lit</title>
+    <div>
+      <h2>Step</h2>
+      <div class="row align-items-center">
+          <div class="col-sm-2"><p id="value-step"></p></div>
+          <div class="col-sm"><div id="slider-step"></div></div>
+      </div>
+    </div>
+  
+    <script>
+        // var ages = ["<15", "15-34", "35-64", ">64"];
+        var ages = [0, 15, 35, 65, ]
+    
+        var sliderIntent = d3
+            .sliderBottom()
+            .min(ages[0])
+            .max(ages[3])
+            .width(300)
+            .ticks(4)
+            .default(ages[1])
+            .on('onchange', val => {
+                d3.select('p#value-step').text((val));
+            });
+    
+        var gStep = d3
+            .select('div#slider-step')
+            .append('svg')
+            .attr('width', 500)
+            .attr('height', 100)
+            .append('g')
+            .attr('transform', 'translate(30,30)');
+    
+        gStep.call(sliderStep);
+    
+        d3.select('p#value-step').text((sliderStep.value()));
+    
+    </script>
   </head>
   <body>
     <h1>Breakdown of Gun Deaths from XXXX to XXXX</h1>
