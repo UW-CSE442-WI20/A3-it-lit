@@ -4,8 +4,13 @@
     <meta charset="UTF-8">
     <script src="https://d3js.org/d3.v5.min.js"></script>
     <title>A3 It Lit</title>
+  </head>
+  <body>
+    <h1>Breakdown of Gun Deaths from XXXX to XXXX</h1>
+    <script src="./index.js"></script>
+    <!-- below is my attempt at the Age slider -->
     <div>
-      <h2>Step</h2>
+      <h2>Age</h2>
       <div class="row align-items-center">
           <div class="col-sm-2"><p id="value-step"></p></div>
           <div class="col-sm"><div id="slider-step"></div></div>
@@ -13,10 +18,11 @@
     </div>
   
     <script>
+        // tried using strings but couldn't tell if it works with only numbers
         // var ages = ["<15", "15-34", "35-64", ">64"];
         var ages = [0, 15, 35, 65]
     
-        var sliderIntent = d3
+        var sliderAge = d3
             .sliderBottom()
             .min(ages[0])
             .max(ages[3])
@@ -35,14 +41,11 @@
             .append('g')
             .attr('transform', 'translate(30,30)');
     
-        gStep.call(sliderStep);
+        gStep.call(sliderAge);
     
-        d3.select('p#value-step').text((sliderStep.value()));
+        d3.select('p#value-step').text((sliderAge.value()));
     
     </script>
-  </head>
-  <body>
-    <h1>Breakdown of Gun Deaths from XXXX to XXXX</h1>
-    <script src="./index.js"></script>
+
   </body>
 </html>
