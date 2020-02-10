@@ -28,11 +28,11 @@
           <div class="col-sm-2"><p id="value-age"></p></div>
           <div class="col-sm"><div id="slider-age"></div></div>
       </div>
-      <h2>Intent</h2>
+      <!-- <h2>Intent</h2>
       <div class="row align-items-center">
           <div class="col-sm-2"><p id="value-intent"></p></div>
           <div class="col-sm"><div id="slider-intent"></div></div>
-      </div>
+      </div> -->
     </div>
 
 
@@ -40,7 +40,8 @@
         // Age Slider
         // tried using strings but couldn't tell if it works with only numbers
         // var ages = ["<15", "15-34", "35-64", ">64"];
-        var ages = [0, 15, 35, 65];
+        // var ages = [0, 15, 35, 65];
+        var ages = [0, 20, 40, 60]; // accurate enough generalization in case we can't fix in time
 
         var sliderAge = d3
             .sliderBottom()
@@ -48,7 +49,7 @@
             .max(d3.max(ages))
             .width(300)
             .ticks(4)
-            .step(15)
+            .step(20)
             .default(ages[1])
             .on('onchange', val => {
                 d3.select('p#value-age').text((val));
@@ -66,31 +67,32 @@
 
         d3.select('p#value-age').text((sliderAge.value()));
 
-        // Intent Slider
-        var intent = ["Suicide", "Suicide/Homicide", "Homicide"];
+        // // Intent Slider
+        // var intent = ["Suicide", "Homicide/Suicide", "Homicide"];
 
-        var sliderIntent = d3
-            .sliderBottom()
-            .min(intent[0])
-            .max(intent[2])
-            .width(300)
-            .ticks(3)
-            .default(intent[1])
-            .on('onchange', val => {
-                d3.select('p#value-intent').text((val));
-            });
+        // var sliderIntent = d3
+        //     .sliderBottom()
+        //     .min(0)
+        //     .max(2)
+        //     .width(300)
+        //     .ticks(2)
+        //     .step(1)
+        //     .default(0)
+        //     .on('onchange', val => {
+        //         d3.select('p#value-intent').text((intent[val]));
+        //     });
 
-        var gIntent = d3
-            .select('div#slider-intent')
-            .append('svg')
-            .attr('width', 500)
-            .attr('height', 100)
-            .append('g')
-            .attr('transform', 'translate(30,30)');
+        // var gIntent = d3
+        //     .select('div#slider-intent')
+        //     .append('svg')
+        //     .attr('width', 500)
+        //     .attr('height', 100)
+        //     .append('g')
+        //     .attr('transform', 'translate(30,30)');
 
-        gIntent.call(sliderIntent);
+        // gIntent.call(sliderIntent);
 
-        d3.select('p#value-intent').text((sliderIntent.value()));
+        // d3.select('p#value-intent').text((intent[sliderIntent.value()]));
     </script>
 
   </body>
