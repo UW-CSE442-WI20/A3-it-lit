@@ -6,7 +6,7 @@
 
 // draw SVG elements, graph titles, axes (fxn w/ dataset input)
 //      mouse-over DoD?
-diameter = 500;
+diameter = 600;
 pad = 20;
 var scale = d3.scaleSqrt();
 var svg = d3.select("body").append("svg");
@@ -59,7 +59,7 @@ d3.csv(csvFile, function(d) {
 })
 
 // hard cap @ 6 circles, so hard math was performed on rendering
-// hard padding @ 100 on each side, so actual svg is 300x300
+// hard padding @ 100 on each side, so actual svg is 400x400
 function enterCircles(data) {
   // scale.domain([0, d3.max(data, function(d) { return d.Deaths; })])
   //     .range([0, d3.max(data, function(d) { return d.Rate; })]); // idk
@@ -102,8 +102,8 @@ function enterCircles(data) {
   .append("g")
   .attr("class", "node")
   .attr("transform", function(d, i) {
-    var xOffset = (i+1)*50 + scale(d.value);
-    var yOffset = (i+1)*50 + scale(d.value);
+    var xOffset = (i+1)*75 + scale(d.value);
+    var yOffset = (i+1)*75 + scale(d.value);
     // if (i === 0) {
     //   return "translate(" + xOffset + "," + yOffset + ")";
     // } else {
