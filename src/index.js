@@ -6,7 +6,7 @@
 
 // draw SVG elements, graph titles, axes (fxn w/ dataset input)
 //      mouse-over DoD?
-diameter = 600;
+diameter = 500;
 pad = 20;
 var scale = d3.scaleSqrt();
 var svg = d3.select("body").append("svg");
@@ -58,7 +58,8 @@ d3.csv(csvFile, function(d) {
     };
 })
 
-
+// hard cap @ 6 circles, so hard math was performed on rendering
+// hard padding @ 100 on each side, so actual svg is 300x300
 function enterCircles(data) {
   // scale.domain([0, d3.max(data, function(d) { return d.Deaths; })])
   //     .range([0, d3.max(data, function(d) { return d.Rate; })]); // idk
@@ -82,35 +83,35 @@ function enterCircles(data) {
   var maxValue = getMaxValue(nestedData);
 
   scale.domain([0, maxValue])
-    .range([0, diameter / nestedData.length]);
+    .range([20, (diameter - 200) / nestedData.length]);
     
 
-  var bubble = d3.pack(nestedData)
-    .size([diameter, diameter])
-    .padding(2);
+  // var bubble = d3.pack(nestedData)
+  //   .size([diameter, diameter])
+  //   .padding(2);
 
-  //var nodes = d3.hierarchy(nestedData);
+  // var nodes = d3.hierarchy(nestedData).sum(function(d) {
+  //   return Math.round(d.Rate);
+  // });
+  // console.log(nodes);
   console.log(nestedData);
 
   var node = svg.selectAll(".node")
   .data(nestedData)
   .enter()
-  .filter(function(d){
-      return !d.children;
-  })
   .append("g")
   .attr("class", "node")
   .attr("transform", function(d, i) {
-    var xOffset = scale(d.value);
-    var yOffset = scale(d.value);
-    if (i === 0) {
-      return "translate(" + xOffset + "," + yOffset + ")";
-    } else {
-      var prevX = scale(nestedData[i-1].value) + 50;
-      var prevY = 0;
-      return "translate(" + (xOffset + prevX) + "," + (yOffset + prevX) + ")";
-    }
-      //return "translate(" + (scale(d.value) + (200 / (i+1))) + "," + (scale(d.value) + 100) + ")";
+    var xOffset = (i+1)*50 + scale(d.value);
+    var yOffset = (i+1)*50 + scale(d.value);
+    // if (i === 0) {
+    //   return "translate(" + xOffset + "," + yOffset + ")";
+    // } else {
+    //   var prevX = scale(nestedData[i-1].value) + 50;
+    //   var prevY = 0;
+    //   return "translate(" + xOffset + "," + yOffset + ")";
+    // }
+    return "translate(" + xOffset + ", " + yOffset + ")";
   });
 
   node.append("title")
@@ -130,7 +131,7 @@ function enterCircles(data) {
   node.append("text")
     .attr("dy", ".2em")
     .style("text-anchor", "middle")
-    .text(function(d, i) {
+    .text(function(d) {
         return d.key;
     })
     .attr("font-family", "sans-serif")
@@ -142,7 +143,7 @@ function enterCircles(data) {
   node.append("text")
     .attr("dy", "1.3em")
     .style("text-anchor", "middle")
-    .text(function(d, i) {
+    .text(function(d) {
         return d.value;
     })
     .attr("font-family",  "Gill Sans", "Gill Sans MT")
