@@ -7,7 +7,7 @@
 // draw SVG elements, graph titles, axes (fxn w/ dataset input)
 //      mouse-over DoD?
 diameter = 600;
-pad = 2;
+pad = 20;
 var scale = d3.scaleSqrt();
 var svg = d3.select("body").append("svg");
 svg.attr("width", diameter).attr("height", diameter);
@@ -21,7 +21,7 @@ svg.attr("width", diameter).attr("height", diameter);
 function getFilteredData(data, intent) {
   console.log(intent);
   if (intent == 1) { // double equals allows interpolation
-    // both homicide and suicide (this is not right though)
+    // both homicide and suicide
     return data;
   } else if (intent == 2) {
     // homicide
@@ -41,7 +41,6 @@ d3.csv(csvFile, function(d) {
         d.Rate = parseFloat(d.Rate);
         return d;
 }).then(function(d) {
-    // var stratifiedData = d3.stratify(d);
     var $intentSelector = document.getElementById("intent-select"); 
     var intentData = getFilteredData(d, $intentSelector.value);
     enterCircles(intentData);
@@ -51,57 +50,161 @@ d3.csv(csvFile, function(d) {
       var intent = e.target.value;
       var intentData = getFilteredData(d, intent);
 
-      updateCircles(intentData);
-      enterCircles(intentData);
+
+      //updateCircles(intentData);
       exitCircles(intentData);
+      enterCircles(intentData);
 
     };
 })
 
 
 function enterCircles(data) {
-  scale.domain([0, d3.max(data, function(d) { return d.Deaths; })])
-      .range([0, d3.max(data, function(d) { return d.Rate; })]); // idk
+  // scale.domain([0, d3.max(data, function(d) { return d.Deaths; })])
+  //     .range([0, d3.max(data, function(d) { return d.Rate; })]); // idk
 
-  //Add the circles
-  svg.selectAll("circles")
-    .data(data)
-    .enter()
-    .append("circle")
-    .attr("cx", function(d, i) {
-        return i*d.Rate + pad;
+  var nestedData = d3.nest()
+    .key(function(d) { return d.Race;})
+    .rollup(function(d) {
+      return d3.sum(d, function(d) {
+        return Math.round(d.Rate);  // deaths per 100k
+      })
     })
-    .attr("cy", function(d, i) {
-        return diameter/2;
-    })
+    .entries(data);
+
+  function getMaxValue(d) {
+    var currMax = d[0].value;
+    for (var i = 1; i < d.length; i++) {
+      currMax = Math.max(currMax, d[i].value);
+    }
+    return currMax;
+  }
+  var maxValue = getMaxValue(nestedData);
+
+  scale.domain([0, maxValue])
+    .range([0, diameter / nestedData.length]);
+    
+
+  var bubble = d3.pack(nestedData)
+    .size([diameter, diameter])
+    .padding(2);
+
+  //var nodes = d3.hierarchy(nestedData);
+  console.log(nestedData);
+
+  var node = svg.selectAll(".node")
+  .data(nestedData)
+  .enter()
+  .filter(function(d){
+      return !d.children;
+  })
+  .append("g")
+  .attr("class", "node")
+  .attr("transform", function(d, i) {
+    var xOffset = scale(d.value);
+    var yOffset = scale(d.value);
+    if (i === 0) {
+      return "translate(" + xOffset + "," + yOffset + ")";
+    } else {
+      var prevX = scale(nestedData[i-1].value) + 50;
+      var prevY = 0;
+      return "translate(" + (xOffset + prevX) + "," + (yOffset + prevX) + ")";
+    }
+      //return "translate(" + (scale(d.value) + (200 / (i+1))) + "," + (scale(d.value) + 100) + ")";
+  });
+
+  node.append("title")
+    .text(function(d, i) {
+      return d.key + ": " + d.value;
+    });
+
+  node.append("circle")
     .attr("r", function(d, i) {
-        // console.log(d);
-        return scale(d.Deaths);
+        return scale(d.value);
     })
-    .attr("fill", getRandomColor()); // color changing);
-}
+    .attr("stroke", "black")
+    .style("fill", function(d,i) {
+        return getRandomColor();
+    });
+
+  node.append("text")
+    .attr("dy", ".2em")
+    .style("text-anchor", "middle")
+    .text(function(d, i) {
+        return d.key;
+    })
+    .attr("font-family", "sans-serif")
+    .attr("font-size", function(d){
+        return scale(d.value)/5;
+    })
+    .attr("fill", "white");
+
+  node.append("text")
+    .attr("dy", "1.3em")
+    .style("text-anchor", "middle")
+    .text(function(d, i) {
+        return d.value;
+    })
+    .attr("font-family",  "Gill Sans", "Gill Sans MT")
+    .attr("font-size", function(d){
+        return scale(d.value)/5;
+    })
+    .attr("fill", "white");
+
+  d3.select(self.frameElement)
+    .style("height", diameter + "px");
+
+
+
+    //Add the circles
+    // svg.selectAll("circles")
+    //   .data(data)
+    //   .enter()
+    //   .append("circle")
+    //   .attr("cx", function(d, i) {  // todo: fix math so don't overlay @ least
+    //       return i*d.Rate + pad;
+    //   })
+    //   .attr("cy", function(d, i) {
+    //       return diameter/2;
+    //   })
+    //   .attr("r", function(d, i) {
+    //       // console.log(d);
+    //       return scale(d.Deaths);
+    //   })
+    //   .attr("stroke", "black")
+    //   .attr("fill", getRandomColor()) // color changing
+    //   .append("text")
+    //   .style("text-anchor", "middle")
+    //   .attr("fill", "white")
+    //   .text(function(d) {
+    //     console.log("we here");
+    //     return d.Race + ": " + d.Age;
+    //   })
+    }
 
 function exitCircles(data) {
-  svg.selectAll("circles")
-      .data(data)
-      .exit()
-      .remove();
+// svg.selectAll("circles")
+//     .data(data)
+//     .exit()
+//     .remove();
+  svg.selectAll("g").remove(); // doesn't allow transitions, but deletes properly.
 }
 
 function updateCircles(data) { // need to bind circles to datapoints; not sure how
-  svg.selectAll("circles")
-      .data(data)
-      .transition();
+svg.selectAll("circles")
+    .data(data)
+    .transition();
 }
 
-// for testing purposes
+// differentiation on refresh
+// sometimes clashes with the white of the texts
 function getRandomColor() {
-  var letters = '0123456789ABCDEF';
-  var color = '#';
-  for (var i = 0; i < 6; i++) {
-    color += letters[Math.floor(Math.random() * 16)];
-  }
-  return color;
+var letters = '0123456789ABCDEF';
+var color = '#';
+for (var i = 0; i < 6; i++) {
+  color += letters[Math.floor(Math.random() * 16)];
+}
+return color;
 }
 
     // d3.csv(csvFile, function(d) {
