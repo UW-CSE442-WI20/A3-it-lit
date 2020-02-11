@@ -2,12 +2,13 @@
 
 // suicide & side-annotation
 
-diameter = 600;
+diameter = 500;
 pad = 5;
 var ages = ["All", "Under 15", "15 - 34", "35 - 64", "65+"];
+var colors = ["#A6ACAF", "#52BE80", "#E67E22", "#5DADE2", "#E74C3C", "#2471A3"]
 var scale = d3.scaleSqrt();
 var svg = d3.select("body").append("svg");
-svg.attr("width", diameter).attr("height", diameter);
+svg.attr("width", diameter).attr("height", diameter).attr("border", 0);
 
 var pack = d3.pack()
     .size([diameter-50, diameter])
@@ -61,7 +62,7 @@ d3.csv(csvFile, function(d) {
             ageGroup = val;
             var ageData = getFilteredData(d, intent, ageGroup);
             updateCircles(ageData);
-            enterCircles(ageData);
+            //enterCircles(ageData);
         });
 
     var gAge = d3
@@ -84,7 +85,7 @@ d3.csv(csvFile, function(d) {
 
       updateCircles(intentData);
       //exitCircles(intentData);
-      enterCircles(intentData);
+      //enterCircles(intentData);
 
     };
 })
@@ -136,7 +137,7 @@ function enterCircles(data) {
     })
     .attr("stroke", "black")
     .style("fill", function(d,i) {
-        return getRandomColor();
+        return colors[i];
     });
 
   node.append("text")

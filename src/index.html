@@ -2,26 +2,29 @@
 <html>
   <head>
     <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="index.css">
     <script src="https://d3js.org/d3.v5.min.js"></script>
     <title>A3 It Lit</title>
   </head>
 
   <body>
-    <h2>Breakdown of Gun Deaths per 100,000 from 2012 to 2014</h2>
-    <div>
-      <label>
-        <select id="intent-select">
-          <option value=1 selected>Homicide/Suicide</option>
-          <option value=2>Homicide</option>
-          <option value=3>Suicide</option>
-        </select>
-      </label>
-    </div>
-    <div>
-      <h3>Age</h3>
-      <div class="row align-items-center">
-          <div class="col-sm-2"><p id="value-age"></p></div>
-          <div class="col-sm"><div id="slider-age"></div></div>
+    <h2>Breakdown of Gun Deaths by Race and Age from 2012 to 2014</h2>
+    <p> Units: Deaths per 100,000</p>
+    <div id="specs">
+      <div id="intent">
+        <h3>Intent:</h3>
+          <select id="intent-select">
+            <option value=1 selected>All Deaths</option>
+            <option value=2>Homicide</option>
+            <option value=3>Suicide</option>
+          </select>
+      </div>
+      <div id="age">
+        <h3>Age:</h3>
+        <div class="col-sm-2"><p id="value-age"></p></div>
+        <div class="col-sm"><div id="slider-age"></div></div>
+        <!-- <div class="row align-items-center"> -->
+        <!-- </div> -->
       </div>
     </div>
     <script src="https://unpkg.com/d3-simple-slider"></script>
