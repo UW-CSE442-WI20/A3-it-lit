@@ -17,78 +17,44 @@
         </select>
       </label>
     </div>
-    <script src="./index.js"></script>
-    <!-- below is my attempt at the sliders -->
-    <script src="https://unpkg.com/d3-simple-slider"></script>
     <div>
       <h3>Age</h3>
       <div class="row align-items-center">
           <div class="col-sm-2"><p id="value-age"></p></div>
           <div class="col-sm"><div id="slider-age"></div></div>
       </div>
-      <!-- <h2>Intent</h2>
-      <div class="row align-items-center">
-          <div class="col-sm-2"><p id="value-intent"></p></div>
-          <div class="col-sm"><div id="slider-intent"></div></div>
-      </div> -->
     </div>
+    <script src="https://unpkg.com/d3-simple-slider"></script>
+    <script src="./index.js"></script>
 
 
     <script>
         // Age Slider
-        var ages = ["All", "<15", "15-34", "35-64", ">64"];
-
-        var sliderAge = d3
-            .sliderBottom()
-            .min(0)  // bind based on 0-4 on the call, filter
-            .max(4)
-            .width(300)
-            .ticks(4)
-            .step(1)
-            .default(0)
-            .on('onchange', val => {
-                d3.select('p#value-age').text((ages[val]));
-            });
-
-        var gAge = d3
-            .select('div#slider-age')
-            .append('svg')
-            .attr('width', 500)
-            .attr('height', 100)
-            .append('g')
-            .attr('transform', 'translate(30,30)');
-
-        gAge.call(sliderAge);
-
-        d3.select('p#value-age').text((ages[sliderAge.value()]));
-
-        // // Intent Slider
-        // var intent = ["Suicide", "Homicide/Suicide", "Homicide"];
-
-        // var sliderIntent = d3
+        // var ages = ["All", "<15", "15-34", "35-64", ">64"];
+        //
+        // var sliderAge = d3
         //     .sliderBottom()
-        //     .min(0)
-        //     .max(2)
+        //     .min(0)  // bind based on 0-4 on the call, filter
+        //     .max(4)
         //     .width(300)
-        //     .ticks(2)
+        //     .ticks(4)
         //     .step(1)
         //     .default(0)
         //     .on('onchange', val => {
-        //         d3.select('p#value-intent').text((intent[val]));
+        //         d3.select('p#value-age').text((ages[val]));
         //     });
-
-        // var gIntent = d3
-        //     .select('div#slider-intent')
+        //
+        // var gAge = d3
+        //     .select('div#slider-age')
         //     .append('svg')
         //     .attr('width', 500)
         //     .attr('height', 100)
         //     .append('g')
         //     .attr('transform', 'translate(30,30)');
-
-        // gIntent.call(sliderIntent);
-
-        // d3.select('p#value-intent').text((intent[sliderIntent.value()]));
+        //
+        // gAge.call(sliderAge);
+        //
+        // d3.select('p#value-age').text((ages[sliderAge.value()]));
     </script>
-
   </body>
 </html>

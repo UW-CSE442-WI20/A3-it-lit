@@ -4,6 +4,7 @@
 
 diameter = 600;
 pad = 5;
+var ages = ["All", "Under 15", "15 - 34", "35 - 64", "65+"];
 var scale = d3.scaleSqrt();
 var svg = d3.select("body").append("svg");
 svg.attr("width", diameter).attr("height", diameter);
@@ -12,17 +13,23 @@ var pack = d3.pack()
     .size([diameter-50, diameter])
     .padding(pad);
 
-function getFilteredData(data, intent) {
+function getFilteredData(data, intent, ageGroup) {
   console.log(intent);
-  if (intent == 1) { // double equals allows interpolation
+  if (intent == 1 && ageGroup == 0) { // double equals allows interpolation
     // both homicide and suicide
     return data;
-  } else if (intent == 2) {
+  } else if (intent == 1) {
+    return data.filter(function(d) { return d.Age === ages[ageGroup] });
+  } else if (intent == 2 && ageGroup == 0) {
     // homicide
     return data.filter(function(d) { return d.Intent === "Homicide"});
-  } else {
+  } else if (intent == 2) {
+    return data.filter(function(d) { return (d.Intent === "Homicide") && (d.Age === ages[ageGroup])});
+  } else if (intent == 3 && ageGroup == 0){
     // suicide
     return data.filter(function(d) { return d.Intent === "Suicide"});
+  } else {
+    return data.filter(function(d) { return (d.Intent === "Suicide") && (d.Age === ages[ageGroup])});
   }
 }
 
@@ -35,14 +42,44 @@ d3.csv(csvFile, function(d) {
         return d;
 }).then(function(d) {
     var $intentSelector = document.getElementById("intent-select");
-    var intentData = getFilteredData(d, $intentSelector.value);
+    var intent = $intentSelector.value;
+    var ageGroup = 0;
+    var intentData = getFilteredData(d, $intentSelector.value, ageGroup);
 
     enterCircles(intentData);
 
+    var sliderAge = d3
+        .sliderBottom()
+        .min(0)  // bind based on 0-4 on the call, filter
+        .max(4)
+        .width(300)
+        .ticks(4)
+        .step(1)
+        .default(0)
+        .on('onchange', val => {
+            d3.select('p#value-age').text((ages[val]));
+            ageGroup = val;
+            var ageData = getFilteredData(d, intent, ageGroup);
+            updateCircles(ageData);
+            enterCircles(ageData);
+        });
+
+    var gAge = d3
+        .select('div#slider-age')
+        .append('svg')
+        .attr('width', 500)
+        .attr('height', 100)
+        .append('g')
+        .attr('transform', 'translate(30,30)');
+
+    gAge.call(sliderAge);
+
+    d3.select('p#value-age').text((ages[sliderAge.value()]));
+
     $intentSelector.onchange = function(e) {
       console.log($intentSelector.value);
-      var intent = e.target.value;
-      var intentData = getFilteredData(d, intent);
+      intent = e.target.value;
+      var intentData = getFilteredData(d, intent, ageGroup);
 
 
       updateCircles(intentData);
@@ -142,7 +179,7 @@ function exitCircles(data) {
   .remove(); // doesn't allow transitions, but deletes properly.
 }
 
-function updateCircles(data) { 
+function updateCircles(data) {
 
   var nestedData = d3.nest()
   .key(function(d) { return d.Race;})
@@ -155,7 +192,6 @@ function updateCircles(data) {
 
 var root = d3.hierarchy({children: nestedData})
   .sum(function(d) { return d.value; })
-
 var maxValue = getMaxValue(nestedData);
 
 scale.domain([0, maxValue])
@@ -205,7 +241,7 @@ scale.domain([0, maxValue])
 
 
 
-    
+
 }
 
 // differentiation on refresh
