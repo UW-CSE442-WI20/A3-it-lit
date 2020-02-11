@@ -12,6 +12,10 @@ var scale = d3.scaleSqrt();
 var svg = d3.select("body").append("svg");
 svg.attr("width", diameter).attr("height", diameter);
 
+var pack = d3.pack()
+    .size([diameter-50, diameter])
+    .padding(pad);
+
 // var filterByIntent = function(d) {
 //     return {
 //         Intent: d.Intent,
@@ -41,8 +45,9 @@ d3.csv(csvFile, function(d) {
         d.Rate = parseFloat(d.Rate);
         return d;
 }).then(function(d) {
-    var $intentSelector = document.getElementById("intent-select"); 
+    var $intentSelector = document.getElementById("intent-select");
     var intentData = getFilteredData(d, $intentSelector.value);
+
     enterCircles(intentData);
 
     $intentSelector.onchange = function(e) {
@@ -73,6 +78,9 @@ function enterCircles(data) {
     })
     .entries(data);
 
+  var root = d3.hierarchy({children: nestedData})
+    .sum(function(d) { return d.value; })
+
   function getMaxValue(d) {
     var currMax = d[0].value;
     for (var i = 1; i < d.length; i++) {
@@ -83,8 +91,8 @@ function enterCircles(data) {
   var maxValue = getMaxValue(nestedData);
 
   scale.domain([0, maxValue])
-    .range([20, (diameter - 200) / nestedData.length]);
-    
+    .range([20, (diameter) / nestedData.length]);
+
 
   // var bubble = d3.pack(nestedData)
   //   .size([diameter, diameter])
@@ -97,13 +105,13 @@ function enterCircles(data) {
   console.log(nestedData);
 
   var node = svg.selectAll(".node")
-  .data(nestedData)
+  .data(pack(root).leaves())
   .enter()
   .append("g")
   .attr("class", "node")
   .attr("transform", function(d, i) {
-    var xOffset = (i+1)*75 + scale(d.value);
-    var yOffset = (i+1)*75 + scale(d.value);
+    //var xOffset = (i+1)*75 + scale(d.value);
+    //var yOffset = (i+1)*75 + scale(d.value);
     // if (i === 0) {
     //   return "translate(" + xOffset + "," + yOffset + ")";
     // } else {
@@ -111,7 +119,7 @@ function enterCircles(data) {
     //   var prevY = 0;
     //   return "translate(" + xOffset + "," + yOffset + ")";
     // }
-    return "translate(" + xOffset + ", " + yOffset + ")";
+    return "translate(" + d.x + ", " + d.y + ")";
   });
 
   node.append("title")
@@ -120,6 +128,8 @@ function enterCircles(data) {
     });
 
   node.append("circle")
+    .transition()
+    .duration(1000)
     .attr("r", function(d, i) {
         return scale(d.value);
     })
@@ -132,7 +142,7 @@ function enterCircles(data) {
     .attr("dy", ".2em")
     .style("text-anchor", "middle")
     .text(function(d) {
-        return d.key;
+        return d.data.key;
     })
     .attr("font-family", "sans-serif")
     .attr("font-size", function(d){
@@ -144,6 +154,7 @@ function enterCircles(data) {
     .attr("dy", "1.3em")
     .style("text-anchor", "middle")
     .text(function(d) {
+        console.log(d);
         return d.value;
     })
     .attr("font-family",  "Gill Sans", "Gill Sans MT")
@@ -188,7 +199,8 @@ function exitCircles(data) {
 //     .data(data)
 //     .exit()
 //     .remove();
-  svg.selectAll("g").remove(); // doesn't allow transitions, but deletes properly.
+  svg.selectAll("g")
+  .remove(); // doesn't allow transitions, but deletes properly.
 }
 
 function updateCircles(data) { // need to bind circles to datapoints; not sure how
