@@ -157,7 +157,7 @@ function enterCircles(data) {
     .style("text-anchor", "middle")
     .text(function(d) {
         console.log(d);
-        return d.value;
+        return d.value.toFixed(2);
     })
     .attr("font-family",  "Gill Sans", "Gill Sans MT")
     .attr("font-size", function(d){
@@ -185,7 +185,7 @@ function updateCircles(data) {
   .key(function(d) { return d.Race;})
   .rollup(function(d) {
     return d3.sum(d, function(d) {
-      return Math.round(d.Rate);  // deaths per 100k
+      return d.Rate;  // deaths per 100k to 2 decimals
     })
   })
   .entries(data);
@@ -202,7 +202,7 @@ scale.domain([0, maxValue])
   .transition()
   .duration(2000)
   .attr("transform", function(d, i) {
-    return "translate(" + d.x + ", " + d.y + ")";
+    return "translate(" + d.x + ", " + d.y+ ")";
   })
   .call(function(node) {
     node.select("circle")
@@ -227,7 +227,7 @@ scale.domain([0, maxValue])
     .style("text-anchor", "middle")
     .text(function(d) {
         console.log(d);
-        return d.value;
+        return d.value.toFixed(2);
     })
     .attr("font-family",  "Gill Sans", "Gill Sans MT")
     .attr("font-size", function(d){
