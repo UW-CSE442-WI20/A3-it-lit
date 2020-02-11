@@ -45,7 +45,7 @@ d3.csv(csvFile, function(d) {
       var intentData = getFilteredData(d, intent);
 
 
-      //updateCircles(intentData);
+      updateCircles(intentData);
       exitCircles(intentData);
       enterCircles(intentData);
 
@@ -142,9 +142,12 @@ function exitCircles(data) {
 }
 
 function updateCircles(data) { 
+
   svg.selectAll(".node")
     .data(data)
+    // .call(enterCircles(data))
     .transition();
+    
 }
 
 // differentiation on refresh
