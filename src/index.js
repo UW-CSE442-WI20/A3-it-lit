@@ -3,7 +3,7 @@
 // suicide & side-annotation
 
 diameter = 600;
-pad = 20;
+pad = 5;
 var scale = d3.scaleSqrt();
 var svg = d3.select("body").append("svg");
 svg.attr("width", diameter).attr("height", diameter);
@@ -46,7 +46,7 @@ d3.csv(csvFile, function(d) {
 
 
       updateCircles(intentData);
-      exitCircles(intentData);
+      //exitCircles(intentData);
       enterCircles(intentData);
 
     };
@@ -116,6 +116,7 @@ function enterCircles(data) {
 
   node.append("text")
     .attr("dy", "1.3em")
+    .attr("class", "subtitle")
     .style("text-anchor", "middle")
     .text(function(d) {
         console.log(d);
@@ -143,10 +144,67 @@ function exitCircles(data) {
 
 function updateCircles(data) { 
 
-  svg.selectAll(".node")
-    .data(data)
-    // .call(enterCircles(data))
-    .transition();
+  var nestedData = d3.nest()
+  .key(function(d) { return d.Race;})
+  .rollup(function(d) {
+    return d3.sum(d, function(d) {
+      return Math.round(d.Rate);  // deaths per 100k
+    })
+  })
+  .entries(data);
+
+var root = d3.hierarchy({children: nestedData})
+  .sum(function(d) { return d.value; })
+
+var maxValue = getMaxValue(nestedData);
+
+scale.domain([0, maxValue])
+  .range([20, (diameter) / nestedData.length]);
+
+  var node = svg.selectAll(".node")
+  .data(pack(root).leaves())
+  .transition()
+  .duration(2000)
+  .attr("transform", function(d, i) {
+    return "translate(" + d.x + ", " + d.y + ")";
+  })
+  .call(function(node) {
+    node.select("circle")
+    .attr("r", function(d, i) {
+        return scale(d.value);
+    });
+
+    node.select("text")
+    .attr("dy", ".2em")
+    .style("text-anchor", "middle")
+    .text(function(d) {
+        return d.data.key;
+    })
+    .attr("font-family", "sans-serif")
+    .attr("font-size", function(d){
+        return scale(d.value)/5;
+    })
+    .attr("fill", "white");
+
+    node.select(".subtitle")
+    .attr("dy", "1.3em")
+    .style("text-anchor", "middle")
+    .text(function(d) {
+        console.log(d);
+        return d.value;
+    })
+    .attr("font-family",  "Gill Sans", "Gill Sans MT")
+    .attr("font-size", function(d){
+        return scale(d.value)/5;
+    })
+    .attr("fill", "white");
+
+    d3.select(self.frameElement)
+    .style("height", diameter + "px");
+  });
+
+
+
     
 }
 
