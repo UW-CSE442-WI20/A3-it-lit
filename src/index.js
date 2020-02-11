@@ -2,10 +2,6 @@
 
 // suicide & side-annotation
 
-// other granularities
-
-// draw SVG elements, graph titles, axes (fxn w/ dataset input)
-//      mouse-over DoD?
 diameter = 600;
 pad = 20;
 var scale = d3.scaleSqrt();
@@ -16,12 +12,6 @@ var pack = d3.pack()
     .size([diameter-50, diameter])
     .padding(pad);
 
-// var filterByIntent = function(d) {
-//     return {
-//         Intent: d.Intent,
-//         Deaths: d.Deaths
-//     };
-// }
 function getFilteredData(data, intent) {
   console.log(intent);
   if (intent == 1) { // double equals allows interpolation
@@ -35,7 +25,6 @@ function getFilteredData(data, intent) {
     return data.filter(function(d) { return d.Intent === "Suicide"});
   }
 }
-
 
 // read in CSV data
 const csvFile = require("./fullData.csv");
@@ -64,7 +53,7 @@ d3.csv(csvFile, function(d) {
 })
 
 // hard cap @ 6 circles, so hard math was performed on rendering
-// hard padding @ 100 on each side, so actual svg is 400x400
+// hard padding @ 50 on each side, so actual svg is 500x500
 function enterCircles(data) {
   // scale.domain([0, d3.max(data, function(d) { return d.Deaths; })])
   //     .range([0, d3.max(data, function(d) { return d.Rate; })]); // idk
@@ -81,27 +70,11 @@ function enterCircles(data) {
   var root = d3.hierarchy({children: nestedData})
     .sum(function(d) { return d.value; })
 
-  function getMaxValue(d) {
-    var currMax = d[0].value;
-    for (var i = 1; i < d.length; i++) {
-      currMax = Math.max(currMax, d[i].value);
-    }
-    return currMax;
-  }
   var maxValue = getMaxValue(nestedData);
 
   scale.domain([0, maxValue])
     .range([20, (diameter) / nestedData.length]);
 
-
-  // var bubble = d3.pack(nestedData)
-  //   .size([diameter, diameter])
-  //   .padding(2);
-
-  // var nodes = d3.hierarchy(nestedData).sum(function(d) {
-  //   return Math.round(d.Rate);
-  // });
-  // console.log(nodes);
   console.log(nestedData);
 
   var node = svg.selectAll(".node")
@@ -110,15 +83,6 @@ function enterCircles(data) {
   .append("g")
   .attr("class", "node")
   .attr("transform", function(d, i) {
-    //var xOffset = (i+1)*75 + scale(d.value);
-    //var yOffset = (i+1)*75 + scale(d.value);
-    // if (i === 0) {
-    //   return "translate(" + xOffset + "," + yOffset + ")";
-    // } else {
-    //   var prevX = scale(nestedData[i-1].value) + 50;
-    //   var prevY = 0;
-    //   return "translate(" + xOffset + "," + yOffset + ")";
-    // }
     return "translate(" + d.x + ", " + d.y + ")";
   });
 
@@ -166,33 +130,7 @@ function enterCircles(data) {
   d3.select(self.frameElement)
     .style("height", diameter + "px");
 
-
-
-    //Add the circles
-    // svg.selectAll("circles")
-    //   .data(data)
-    //   .enter()
-    //   .append("circle")
-    //   .attr("cx", function(d, i) {  // todo: fix math so don't overlay @ least
-    //       return i*d.Rate + pad;
-    //   })
-    //   .attr("cy", function(d, i) {
-    //       return diameter/2;
-    //   })
-    //   .attr("r", function(d, i) {
-    //       // console.log(d);
-    //       return scale(d.Deaths);
-    //   })
-    //   .attr("stroke", "black")
-    //   .attr("fill", getRandomColor()) // color changing
-    //   .append("text")
-    //   .style("text-anchor", "middle")
-    //   .attr("fill", "white")
-    //   .text(function(d) {
-    //     console.log("we here");
-    //     return d.Race + ": " + d.Age;
-    //   })
-    }
+  }
 
 function exitCircles(data) {
 // svg.selectAll("circles")
@@ -203,14 +141,13 @@ function exitCircles(data) {
   .remove(); // doesn't allow transitions, but deletes properly.
 }
 
-function updateCircles(data) { // need to bind circles to datapoints; not sure how
-svg.selectAll("circles")
+function updateCircles(data) { 
+  svg.selectAll(".node")
     .data(data)
     .transition();
 }
 
 // differentiation on refresh
-// sometimes clashes with the white of the texts
 function getRandomColor() {
 var letters = '0123456789ABCDEF';
 var color = '#';
@@ -220,32 +157,10 @@ for (var i = 0; i < 6; i++) {
 return color;
 }
 
-    // d3.csv(csvFile, function(d) {
-    //         d.Deaths = +d.Deaths;
-    //         d.Population = +d.Population;
-    //         d.Rate = parseFloat(d.Rate);
-    //         return d;
-    // }).then(function(d) {
-    //     scale.domain([0, d3.max(d, function(d) { return d.Deaths; })])
-    //         .range([0, d3.max(d, function(d) { return d.Rate})]); // idk
-    //     // couple on intent & deaths draw relative sizes
-    //     svg.selectAll("circles")
-    //     .data(d)
-    //     .enter()
-    //     .append("circle")
-    //     .attr("cx", function(d, i) {
-    //         return i*d.Rate + padding;
-    //     })
-    //     .attr("cy", function(d, i) {
-    //         return h/2;
-    //     })
-    //     .attr("r", function(d, i) {
-    //         return scale(d.Deaths);
-    //     })
-    //     .attr("fill", "magenta"); // color changing
-    // });
-
-// initial call-back renders homicide bubbles, waits 10 seconds,
-// draws next etc. until end
-
-// set up listeners for on-click / on-drag w/ a slider
+function getMaxValue(d) {
+  var currMax = d[0].value;
+  for (var i = 1; i < d.length; i++) {
+    currMax = Math.max(currMax, d[i].value);
+  }
+  return currMax;
+}
