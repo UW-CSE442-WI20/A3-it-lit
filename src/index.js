@@ -15,7 +15,6 @@ var pack = d3.pack()
     .padding(pad);
 
 function getFilteredData(data, intent, ageGroup) {
-  console.log(intent);
   if (intent == 1 && ageGroup == 0) { // double equals allows interpolation
     // both homicide and suicide
     return data;
@@ -77,7 +76,6 @@ d3.csv(csvFile, function(d) {
     d3.select('p#value-age').text((ages[sliderAge.value()]));
 
     $intentSelector.onchange = function(e) {
-      console.log($intentSelector.value);
       intent = e.target.value;
       var intentData = getFilteredData(d, intent, ageGroup);
 
@@ -95,20 +93,18 @@ function enterCircles(data) {
     .key(function(d) { return d.Race;})
     .rollup(function(d) {
       return d3.sum(d, function(d) {
-        return Math.round(d.Rate);  // deaths per 100k
+        return d.Rate;  // deaths per 100k
       })
     })
     .entries(data);
 
   var root = d3.hierarchy({children: nestedData})
-    .sum(function(d) { return d.value; })
+    .sum(function(d) { return d.value; });
 
   var maxValue = getMaxValue(nestedData);
 
   scale.domain([0, maxValue])
     .range([20, (diameter) / nestedData.length]);
-
-  console.log(nestedData);
 
   var node = svg.selectAll(".node")
   .data(pack(root).leaves())
@@ -152,7 +148,6 @@ function enterCircles(data) {
     .attr("class", "subtitle")
     .style("text-anchor", "middle")
     .text(function(d) {
-        console.log(d);
         return d.value.toFixed(2);
     })
     .attr("font-family",  "Gill Sans", "Gill Sans MT")
@@ -213,7 +208,6 @@ scale.domain([0, maxValue])
     .attr("dy", "1.3em")
     .style("text-anchor", "middle")
     .text(function(d) {
-        console.log(d);
         return d.value.toFixed(2);
     })
     .attr("font-family",  "Gill Sans", "Gill Sans MT")
