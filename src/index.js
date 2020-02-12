@@ -62,7 +62,6 @@ d3.csv(csvFile, function(d) {
             ageGroup = val;
             var ageData = getFilteredData(d, intent, ageGroup);
             updateCircles(ageData);
-            //enterCircles(ageData);
         });
 
     var gAge = d3
@@ -84,8 +83,6 @@ d3.csv(csvFile, function(d) {
 
 
       updateCircles(intentData);
-      //exitCircles(intentData);
-      //enterCircles(intentData);
 
     };
 })
@@ -93,8 +90,6 @@ d3.csv(csvFile, function(d) {
 // hard cap @ 6 circles, so hard math was performed on rendering
 // hard padding @ 50 on each side, so actual svg is 500x500
 function enterCircles(data) {
-  // scale.domain([0, d3.max(data, function(d) { return d.Deaths; })])
-  //     .range([0, d3.max(data, function(d) { return d.Rate; })]); // idk
 
   var nestedData = d3.nest()
     .key(function(d) { return d.Race;})
@@ -171,15 +166,6 @@ function enterCircles(data) {
 
   }
 
-function exitCircles(data) {
-// svg.selectAll("circles")
-//     .data(data)
-//     .exit()
-//     .remove();
-  svg.selectAll("g")
-  .remove(); // doesn't allow transitions, but deletes properly.
-}
-
 function updateCircles(data) {
 
   var nestedData = d3.nest()
@@ -243,16 +229,6 @@ scale.domain([0, maxValue])
 
 
 
-}
-
-// differentiation on refresh
-function getRandomColor() {
-var letters = '0123456789ABCDEF';
-var color = '#';
-for (var i = 0; i < 6; i++) {
-  color += letters[Math.floor(Math.random() * 16)];
-}
-return color;
 }
 
 function getMaxValue(d) {
