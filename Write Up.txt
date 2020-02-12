@@ -1,0 +1,66 @@
+For this assignment we went with gun deaths in the US. Our Data Lead decided to
+use this data because he frequents FiveThirtyEight and enjoys the visualizations
+they use. FiveThirtyEight also is quite transparent about the data they use for
+those visualizations so it was easy for our Data Lead to grab a large amount of
+data from their cite. Once he found a data set on an interesting topic, gun deaths
+in America, he had to decided what variables he wanted to focus on since the
+overall set has quite a lot of options. So, he focused in on homicides and suicides
+given that those are the most salient factors in gun deaths. Then he had to decide
+what would be allow us to differentiate within those groups; race and age are other
+prevalent factors when it comes to gun deaths. Though we only focused on particular
+parts of this whole data set, our Data Lead is confident that this data set is large
+enough that we can expand on our implementation of A3 for our final project using the
+same set.
+
+The deliverable visualization we ended on was based on the varying sized circles we
+saw in the class demo on D3. We thought this encoding would be the best representation
+of gun deaths since we could use the sizes of those circles to represent relative
+size of that group’s representation for that category. We also decided to use an option
+menu for the intents of those deaths (homicide/suicide) since that clearly tells the
+user that these are particular views for the visualization. And we used a slider for
+the ages since that would show a clear progression from youngest to oldest age group.
+We discussed using other representations for our data like line graphs or bar charts
+but decided against it since the transitions between graphs weren’t as easy to track
+as the change in circle sizes.
+
+Our Tech Leads (2 people) spent a lot of their time learning JavaScript (JS) and
+D3 since they didn’t have much experience outside of the minimal use we have in
+previous classes. They agreed it would have been beneficial to have JS and D3
+incorporated into the class as an assignment that everyone needs to complete, to
+make sure everyone has a higher than surface level understanding of these tools.
+They also found D3 to be difficult to use in particular because of the lack of
+documentation. They also spent a lot of their time with finicky portions of their
+code that required a tedious amount of trial and error. However, we also showed
+our visualization to multiple people to see if they were able to easily use our
+interface and whether the information we wanted to present was clear. Much of the
+suggestions we were given from these test subjects were in the form of subjective
+issues like the alignment of text and how quickly transitions occurred but we
+agreed that theses aspects could use some tweaking. It was extremely helpful to
+receive a fresh set of eyes to judge our visualization as an actual tool as we
+were progressing through its implementation.
+
+The way our time was spent as a group is understandable given our roles but we
+hope to even it out much more for the final project. Our Data Lead said he spent
+about 3 hours looking through FiveThirtyEight for a data set and then
+wrangling/cleaning that set. Our Tech Leads said they spent 13-15 hours on the
+implementation of our visualization, though a lot of this was learning the
+languages to a usable degree, much of it was fixing small issues that weren’t
+well documented in D3 which resulted in a lot of wasted time. My role was much
+more minimal, I spent about an hour on the slider we used in our visualization
+and about an hour writing this write up. Though the Data Lead and I had much less
+time-consuming roles we tried to help where we could and provided insight on how
+we wanted our final deliverable to look. For the final project the goal is to have
+another tech lead to lighten the load off our current two, this will also allow
+another set of eyes to be used when finding/fixing issues when they inevitably arise.
+
+Finally, we couldn’t include everything we wanted to in this assignment due to the
+shortened timeline. We wanted to make our visualization more able to show multiple
+combinations of data at the same time (e.g. showing both homicide and suicide at
+the same time rather than one at a time). We also wanted to add annotations about
+our data, like explaining anomalies that stood out, these annotations were made (e.g.
+White Seniors are more likely to commit suicide because they are more likely to own
+guns) but our Tech Leads felt they needed more time to get them working as they wanted
+so, we decided a clear, working visualization was more important than adding annotations
+that were causing trouble with clarity and ease of use. Both of these exclusions for
+A3 we hope to have in our final project because they would provide greater analysis for
+a user of our visualization.
