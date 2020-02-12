@@ -31,3 +31,11 @@ body{
   padding-left: 20px;
   width: 50px;
 }
+
+.tick text {
+  opacity: 0;
+}
+
+.parameter-value text {
+  opacity: 0;
+}

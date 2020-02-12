@@ -117,7 +117,7 @@ function enterCircles(data) {
 
   node.append("title")
     .text(function(d, i) {
-      return d.key + ": " + d.value;
+      return d.data.key + ": " + d.value;
     });
 
   node.append("circle")
@@ -191,6 +191,11 @@ scale.domain([0, maxValue])
     .attr("r", function(d, i) {
         return scale(d.value);
     });
+
+    node.select("title")
+    .text(function(d, i) {
+      return d.data.key + ": " + d.value;
+    })
 
     node.select("text")
     .attr("dy", ".2em")
